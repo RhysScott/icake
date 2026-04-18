@@ -8,6 +8,7 @@ class BaseSetting(BaseSettings):
         extra="forbid",         # 禁止多余字段（安全）
         case_sensitive=False,   # 不区分大小写
         validate_default=True,  # 校验默认值
+
     ) # type: ignore
 
 # JWT 配置
