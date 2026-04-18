@@ -153,9 +153,7 @@ class CacheUtils:
                 host=app_settings.cache.host,
                 port=app_settings.cache.port,
                 db=app_settings.cache.database,
-                password=app_settings.cache.password,
-                decode_responses=True,
-                encoding="utf-8"
+                password=app_settings.cache.password
             )
 
     @classmethod

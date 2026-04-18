@@ -3,8 +3,7 @@
     <!-- 用户信息卡片 -->
     <div class="user-card">
       <div class="avatar">
-        <!-- 修复：头像正确结构 -->
-        <img v-if="userInfo?.avatar" :src="userInfo.avatar" alt="头像" />
+        <img v-if="userInfo?.avatar_url" :src="userInfo.avatar_url" alt="头像" />
         <svg v-else class="avatar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
           <circle cx="12" cy="7" r="4"></circle>

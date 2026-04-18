@@ -2,8 +2,11 @@ from sqlalchemy import create_engine, Column, Integer, String, Date, DateTime
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
 from datetime import datetime
 from common.settings import app_settings
+from common.utils import Logger
 
 
+
+Logger.info(f"数据库链接: {app_settings.db.db_url}")
 # 数据库引擎
 engine = create_engine(app_settings.db.db_url, echo=app_settings.db.echo)
 
