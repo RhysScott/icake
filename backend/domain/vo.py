@@ -2,11 +2,6 @@ from pydantic import BaseModel, Field
 from typing import Any, Optional
 from datetime import datetime
 
-class Response(BaseModel):
-    code: int
-    msg: str
-    data: Any|None = None
-
 class UserLoginRequest(BaseModel):
     """用户登录请求参数"""
     phone: str = Field(..., description="手机号")

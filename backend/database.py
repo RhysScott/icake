@@ -1,10 +1,11 @@
 from sqlalchemy import create_engine, Column, Integer, String, Date, DateTime
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
 from datetime import datetime
+from settings import app_settings
 
 
 # 数据库引擎
-engine = create_engine("sqlite+pysqlite:///demo.db", echo=True)
+engine = create_engine(app_settings.db.db_url, echo=app_settings.db.echo)
 
 # 基础模型
 class Base(DeclarativeBase):
