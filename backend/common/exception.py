@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request
-from utils import ApiResponse
+from fastapi.responses import JSONResponse
+from common.utils import ApiResponse
 
 
 # 业务异常
@@ -26,8 +27,14 @@ def register_exception_handlers(app: FastAPI):
 
     @app.exception_handler(BusinessException)
     async def business_exception_handler(request: Request, exc: BusinessException):
-        return ApiResponse.fail(exc.msg, exc.data, exc.code)
+        return JSONResponse(
+            content=ApiResponse.fail(exc.msg, exc.data, exc.code),
+            status_code=200
+        )
 
     @app.exception_handler(TokenException)
     async def token_exception_handler(request: Request, exc: TokenException):
-        return ApiResponse.fail(exc.msg, exc.data, exc.code)
+        return JSONResponse(
+            content=ApiResponse.fail(exc.msg, exc.data, exc.code),
+            status_code=401
+        )

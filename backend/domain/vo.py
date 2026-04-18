@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Any, Optional
+from typing import Optional
 from datetime import datetime
 
 class UserLoginRequest(BaseModel):
@@ -17,6 +17,7 @@ class UserRegisterRequest(BaseModel):
 
 class UserUpdateRequest(BaseModel):
     """用户信息修改请求参数"""
+    id: int
     nickname: Optional[str] = None
     avatar_url: Optional[str] = None
     gender: Optional[int] = None
@@ -34,8 +35,13 @@ class UserInfoResponse(BaseModel):
     id: int
     phone: str
     nickname: Optional[str] = None
-    avatar: Optional[str] = None
-    create_time: datetime
+    avatar_url: Optional[str] = None
+    bio: Optional[str] = None
+    gender: Optional[int] = None
+    birthday: Optional[datetime] = None
+    create_time: Optional[datetime] = None
+    update_time: Optional[datetime] = None
+    is_deleted: bool
 
     class Config:
         from_attributes = True

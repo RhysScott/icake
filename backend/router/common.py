@@ -1,6 +1,6 @@
 from fastapi import APIRouter, UploadFile, File
 import os
-from utils import ApiResponse
+from common.utils import ApiResponse
 
 router = APIRouter(prefix='/common')
 

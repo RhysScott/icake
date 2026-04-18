@@ -1,10 +1,10 @@
 <template>
-  <div class="nav-wrapper">
+  <div class="tab-wrapper" v-if="tabbar.visible">
     <div
       class="tab-button"
       :class="{ active: route.path === tab.path }"
       v-for="(tab, index) in tabs"
-      :key="index"
+      key="index"
       @click="router.push(tab.path)"
     >
       <component class="icon" :is="tab.component" />
@@ -14,22 +14,27 @@
 </template>
 
 <script setup>
-import { Cake, CakeSlice, CupSoda, House } from "@lucide/vue";
+import { useTabbar } from "@/stores/layout";
+import { Cake, CakeSlice, CupSoda, House, UserRound } from "@lucide/vue";
 import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
 const router = useRouter();
+const tabbar = useTabbar();
 
 const tabs = [
   { label: "首页", component: House, path: "/" },
   { label: "蛋糕", component: Cake, path: "/cake" },
   { label: "甜品", component: CakeSlice, path: "/dessert" },
   { label: "饮品", component: CupSoda, path: "/drink" },
+  { label: "我的", component: UserRound, path: "/profile" },
 ];
 </script>
 
 <style lang="scss" scoped>
-.nav-wrapper {
+@use "@/styles/global.scss" as *;
+
+.tab-wrapper {
   display: flex;
   width: 7.5rem;
   max-width: 7.5rem;
@@ -38,8 +43,8 @@ const tabs = [
   padding: 0.2rem 0;
   bottom: 0;
   left: 0;
-  color: #777;
-  background-color: #d4dee5;
+  color: $nav-text-default;
+  background-color: $nav-bg;
 }
 
 .tab-button {
@@ -47,21 +52,21 @@ const tabs = [
   flex-direction: column;
   align-items: center;
   gap: 0.06rem;
-  font-size: 0.22rem;
+  font-size: $font-md;
   cursor: pointer;
+
+  &.active {
+    color: $nav-text-active !important;
+    font-weight: bold;
+  }
 }
 
 .icon {
-  width: 0.36rem;
-  height: 0.36rem;
+  width: $icon-size;
+  height: $icon-size;
 }
 
 .label {
-  font-size: 0.2rem;
-}
-
-.active {
-  color: #000 !important;
-  font-weight: bold;
+  font-size: $font-sm;
 }
 </style>

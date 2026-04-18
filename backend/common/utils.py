@@ -1,7 +1,7 @@
 import bcrypt
 import jwt
 from domain.dto import JwtPayload
-from settings import app_settings
+from common.settings import app_settings
 from datetime import datetime, timedelta
 import redis
 import logging

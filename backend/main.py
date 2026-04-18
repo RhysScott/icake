@@ -1,9 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-from utils import Logger
+from common.utils import Logger
 from router import register_router
-from exception import register_exception_handlers
+from common.exception import register_exception_handlers
+from middleware import register_middlewares
+import sys
+
+Logger.info(f"Python解释器版本=v{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}")
 
 Logger.info("日志模块初始化完成")
 
@@ -26,10 +30,18 @@ Logger.info("开始注册全局路由模块")
 register_router(app)
 Logger.info("全部路由模块注册完成")
 
+Logger.info("开始注册全局异常处理器")
+register_exception_handlers(app)
+Logger.info("全局异常处理器注册完成")
+
+Logger.info("开始注册中间件")
+register_middlewares(app)
+Logger.info("中间件完成")
+
 
 if __name__ == "__main__":
     # 打印项目启动横幅
-    with open('banner.txt', 'r', encoding='utf-8') as f:
+    with open('static/banner.txt', 'r', encoding='utf-8') as f:
         print(f.read())
         
     # 启动 Uvicorn 服务

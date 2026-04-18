@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from database import User
+from common.database import User
 from domain.vo import (
     UserLoginRequest,
     UserRegisterRequest,
@@ -7,9 +7,9 @@ from domain.vo import (
     UserUpdateRequest
 )
 from domain.dto import JwtPayload
-from utils import PasswordHasher, JwtUtil, DateTimeUtils, CacheUtils
-from exception import BusinessException
-from constant import CacheKey
+from common.utils import PasswordHasher, JwtUtil, DateTimeUtils, CacheUtils
+from common.exception import BusinessException
+from common.constant import CacheKey
 
 
 class UserService:

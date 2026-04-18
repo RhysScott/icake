@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from utils import Logger
+from common.utils import Logger
 
 
 def register_router(app: FastAPI):

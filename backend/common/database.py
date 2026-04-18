@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine, Column, Integer, String, Date, DateTime
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
 from datetime import datetime
-from settings import app_settings
+from common.settings import app_settings
 
 
 # 数据库引擎
