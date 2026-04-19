@@ -2,13 +2,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class BaseSetting(BaseSettings):
-    model_config = SettingsConfigDict(
-        env_file=None,          # 不加载 .env 文件
-        env_mode="strict",      # 禁用环境变量自动加载
-        extra="forbid",         # 禁止多余字段（安全）
-        case_sensitive=False,   # 不区分大小写
-        validate_default=True,  # 校验默认值
-    ) # type: ignore
+    SettingsConfigDict(env_file=None, secrets_dir=None)
 
 # JWT 配置
 class JwtSettings(BaseSetting):
@@ -30,6 +24,7 @@ class DatabaseSettings(BaseSetting):
 
     @property
     def db_url(self) -> str:
+        return f"mysql+pymysql://root:kissme@noahmiller.icu:3306/icake"
         return f"{self.dialect}+{self.db_api}://{self.username}:{self.password}@{self.host}:{self.port}/{self.database}"
 
 # Redis 缓存配置
