@@ -11,7 +11,7 @@ router = APIRouter(prefix='/common')
 @router.post("/upload")
 async def upload(files: list[UploadFile] = File(...)):
     if not files:
-        return ApiResponse.error(message="没有文件上传")
+        return ApiResponse.fail(msg="没有文件上传")
 
     os.makedirs("upload/files", exist_ok=True)
     filenames = []

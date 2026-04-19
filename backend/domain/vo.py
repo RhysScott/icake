@@ -43,8 +43,8 @@ class UserInfoResponse(BaseModel):
     update_time: Optional[datetime] = None
     is_deleted: bool
 
-    class Config:
-        from_attributes = True
+class Config:
+    rom_attributes = True
 
 
 class UserLoginResponse(BaseModel):
