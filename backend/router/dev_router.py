@@ -9,3 +9,8 @@ def name():
 @app.get("/name_1")
 def name_1():
     return {"name1": "向可欣"}
+
+
+@app.get("/lkl")
+def lkl():
+    return {"lkl":"龙科霖"}
