@@ -14,3 +14,7 @@ def name_1():
 @app.get("/lkl")
 def lkl():
     return {"lkl":"龙科霖"}
+
+@app.get("/hsj")
+def hsj():
+    return {"hsj":"黄树军"}
