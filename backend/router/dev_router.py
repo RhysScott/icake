@@ -18,3 +18,7 @@ def lkl():
 @app.get("/hsj")
 def hsj():
     return {"hsj":"黄树军"}
+
+@app.get("/hsj")
+def hsj():
+    return {"hsj":"罗小雨"}
