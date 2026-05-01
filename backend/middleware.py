@@ -6,6 +6,8 @@ from common.context import RequestContext
 import json
 
 WHITE_LIST = [
+    "/admin/user/login",
+    "/admin/user/register",
     "/user/login",
     "/user/register",
     "/docs",

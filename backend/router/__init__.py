@@ -17,3 +17,13 @@ def register_router(app: FastAPI):
     from .user import router as user_router
     app.include_router(user_router)
     Logger.info("用户路由模块注册完成")
+
+    # 注册商品模块路由
+    from .product import router as product_router
+    app.include_router(product_router)
+    Logger.info("商品路由模块注册完成")
+
+    # 注册管理员用户模块路由
+    from .admin.user import router as admin_user_router
+    app.include_router(admin_user_router)
+    Logger.info("管理员用户路由模块注册完成")

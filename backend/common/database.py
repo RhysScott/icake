@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, Date, DateTime, Text
+from sqlalchemy import create_engine, Column, Integer, String, Date, DateTime, Text, DECIMAL
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
 from datetime import datetime
 from common.settings import app_settings
@@ -12,6 +12,22 @@ engine = create_engine(app_settings.db.db_url, echo=app_settings.db.echo)
 # 基础模型
 class Base(DeclarativeBase):
     pass
+
+# 用户表
+class AdminUser(Base):
+    __tablename__ = "sys_user"
+
+    id              = Column(Integer, primary_key=True, autoincrement=True, comment="用户ID")
+    username           = Column(String(36), unique=True, nullable=False, comment="用户名")
+    password        = Column(String(64), nullable=False, comment="密码")
+    avatar_url      = Column(String(255), nullable=True, comment="头像URL")
+    bio             = Column(String(200), nullable=True, comment="个人简介")
+    status          = Column(Integer, default=1, comment="状态：1正常 0禁用")
+    is_deleted      = Column(Integer, default=0, comment="软删除")
+    last_login_time = Column(DateTime, nullable=True, comment="最后登录时间")
+    create_time     = Column(DateTime, default=datetime.now, comment="创建时间")
+    update_time     = Column(DateTime, default=datetime.now, onupdate=datetime.now, comment="更新时间")
+
 
 # 用户表
 class User(Base):
@@ -35,6 +51,7 @@ class User(Base):
 class Image(Base):
     __tablename__ = "image"
     id = Column(Integer, primary_key=True, autoincrement=True, comment="用户ID")
+    rel_id = Column(Integer, nullable=True, comment="关联ID")
     index = Column(Integer, comment="图片索引，记录图片顺序")
     type = Column(Integer, nullable=False, comment="图片类型")
     path = Column(String(255), nullable=True, comment="头像路径")
@@ -52,6 +69,22 @@ class Notice(Base):
     status = Column(Integer, default=1, comment="公告状态 0=关闭 1=开启")
     # 排序值，越小越靠前
     index = Column(Integer, default=0, comment="排序序号")
+    
+    create_time = Column(DateTime, default=datetime.now, comment="创建时间")
+    update_time = Column(DateTime, default=datetime.now, onupdate=datetime.now, comment="更新时间")
+
+    # 商品表
+class Product(Base):
+    __tablename__ = "product"
+    
+    id = Column(Integer, primary_key=True, autoincrement=True, comment="商品ID")
+    name = Column(String(100), nullable=False, comment="商品名称")
+    price = Column(DECIMAL(10,2), nullable=False, comment="商品价格")
+    stock = Column(Integer, default=0, comment="库存数量")
+    intro = Column(String(255), nullable=True, comment="商品简介")
+    content = Column(Text, nullable=True, comment="商品详情")
+    # 状态 0=下架 1=上架
+    status = Column(Integer, default=1, comment="状态 0=下架 1=上架")
     
     create_time = Column(DateTime, default=datetime.now, comment="创建时间")
     update_time = Column(DateTime, default=datetime.now, onupdate=datetime.now, comment="更新时间")

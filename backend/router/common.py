@@ -83,11 +83,11 @@ async def upload(
 @router.get("/banner")
 async def get_banner():
     Logger.info("从缓存查询轮播图信息")
-    cache_data = CacheUtils.get(CacheKey.banner())
+    cache = CacheUtils.get(CacheKey.banner())
 
-    if cache_data:
+    if cache:
         Logger.info("轮播图缓存命中，返回缓存")
-        return ApiResponse.success(json.loads(cache_data))
+        return ApiResponse.success(json.loads(cache))
 
     Logger.info("轮播缓存未命中，查询数据库")
     with SessionFactory() as db:

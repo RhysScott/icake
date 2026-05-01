@@ -29,7 +29,14 @@ class CacheKey:
     @staticmethod
     def notice():
         return "notice"
+    
+    @staticmethod
+    def product(id: int):
+        return f"product:{id}"
 
 class ImageType(Enum):
     UserAvatar = 0
     Banner = 1
+    ProductCover = 2
+    ProductBanner = 3
+    ProductDetail = 4

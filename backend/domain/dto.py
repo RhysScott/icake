@@ -29,3 +29,14 @@ class NoticeModel(BaseDTO):
     index: int | None
     create_time: datetime
     update_time: datetime
+
+class ProductModel(BaseDTO):
+    id: int
+    name: str
+    price: float
+    stock: int
+    intro: str | None
+    content: str | None
+    status: int
+    create_time: datetime|None
+    update_time: datetime|None

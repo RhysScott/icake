@@ -167,13 +167,19 @@ class DateTimeUtils:
         return (datetime.now() + timedelta(hours=app_settings.jwt.expire_hours)).timestamp()
 
 
+import json
+import redis
+from typing import Any
+from common.settings import app_settings
+
+
 class CacheUtils:
-    """Redis 缓存工具"""
+    """Redis 缓存工具（内置 JSON 序列化）"""
     _redis: redis.Redis | None = None
 
     @classmethod
-    def init(cls):
-        """项目启动时初始化一次"""
+    def init(cls) -> None:
+        """项目启动时初始化一次连接"""
         if not cls._redis:
             cls._redis = redis.Redis(
                 host=app_settings.cache.host,
@@ -181,42 +187,61 @@ class CacheUtils:
                 db=app_settings.cache.database,
                 password=app_settings.cache.password,
                 decode_responses=True,
-                socket_timeout=0.5,       # 超短超时
-                socket_connect_timeout=0.5 # 连不上快速失败
+                socket_timeout=0.5,
+                socket_connect_timeout=0.5
             )
 
     @classmethod
     def client(cls) -> redis.Redis:
-        """全局唯一客户端，不再重复判断"""
+        """获取 Redis 客户端"""
         return cls._redis  # type: ignore
 
     @classmethod
-    def set(cls, key: str, value: str | int, ex: int = None):
-        cls.client().set(key, value, ex=ex)
+    def set(cls, key: str, value: Any, ex: int = None) -> None:
+        """写入缓存"""
+        try:
+            json_str = json.dumps(value, ensure_ascii=False, default=str)
+            cls.client().set(key, json_str, ex=ex)
+        except Exception:
+            pass
 
     @classmethod
-    def get(cls, key: str) -> str | None:
-        return cls.client().get(key) # type: ignore
+    def get(cls, key: str) -> Any:
+        """读取缓存"""
+        try:
+            data = cls.client().get(key)  # type: ignore
+            return json.loads(data) if data else None # type: ignore
+        except Exception:
+            return None
+
 
     @classmethod
-    def delete(cls, key: str):
-        cls.client().delete(key)
-      
+    def delete(cls, key: str) -> None:
+        """删除指定 key"""
+        try:
+            cls.client().delete(key)
+        except Exception:
+            pass
 
     @classmethod
-    def mget(cls, keys: list[str]) -> list[str | None]:
+    def mget(cls, keys: list[str]) -> list[Any | None]:
+        """批量获取缓存"""
         if not keys:
             return []
-
-        return cls.client().mget(keys) # type: ignore
-
+        try:
+            values = cls.client().mget(keys)  # type: ignore
+            return [json.loads(v) if v else None for v in values] #type: ignore
+        except Exception:
+            return [None] * len(keys)
 
     @classmethod
     def delete_by_pattern(cls, pattern: str) -> int:
-        keys = cls.client().keys(pattern)
-        return cls.client().delete(*keys) if keys else 0 # type: ignore
-
-
+        """按通配符批量删除"""
+        try:
+            keys = cls.client().keys(pattern)  # type: ignore
+            return cls.client().delete(*keys) if keys else 0  # type: ignore
+        except Exception:
+            return 0
 # 启动时初始化
 CacheUtils.init()
 

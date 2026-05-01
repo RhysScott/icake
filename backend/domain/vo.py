@@ -10,6 +10,26 @@ class UserLoginRequest(BaseVO):
     phone: str = Field(..., description="手机号")
     password: str = Field(..., description="密码")
 
+class AdminLoginRequest(BaseVO):
+    """管理员用户登录请求参数"""
+    username: str = Field(..., description="用户名")
+    password: str = Field(..., description="密码")
+
+
+class AdminInfoResponse(BaseVO):
+    """用户基础信息响应"""
+    id: int
+    username: str
+    gender: Optional[int] = None
+    birthday: Optional[datetime] = None
+    create_time: Optional[datetime] = None
+    update_time: Optional[datetime] = None
+    is_deleted: bool
+
+class AdminUserLoginResponse(AdminInfoResponse):
+    """用户登录响应"""
+    token: str
+
 
 class UserRegisterRequest(BaseVO):
     """用户注册请求参数"""
@@ -68,5 +88,19 @@ class NoticeVO(BaseVO):
     content: str
     status: int
     index: int | None
+    create_time: datetime|None
+    update_time: datetime|None
+
+class ProductVO(BaseVO):
+    id: int
+    name: str
+    price: float
+    stock: int
+    intro: str | None
+    content: str | None
+    status: int
+    cover_url: str|None
+    detail_urls: list[str] | None
+    banner_urls: list[str] | None
     create_time: datetime|None
     update_time: datetime|None
