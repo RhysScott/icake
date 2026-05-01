@@ -68,5 +68,5 @@ class NoticeVO(BaseVO):
     content: str
     status: int
     index: int | None
-    create_time: datetime
-    update_time: datetime
+    create_time: datetime|None
+    update_time: datetime|None
