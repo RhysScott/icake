@@ -28,7 +28,7 @@ class DatabaseSettings(BaseSetting):
     database: str = "icake"
     dialect: str = "mysql"
     db_api: str = "pymysql"
-    echo: bool = True
+    echo: bool = False
 
     @property
     def db_url(self) -> str:
