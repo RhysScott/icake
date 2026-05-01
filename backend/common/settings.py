@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
+import os
 
 
 class BaseSetting(BaseSettings):
@@ -15,7 +16,7 @@ class BaseSetting(BaseSettings):
 class JwtSettings(BaseSetting):
     secret_key: str = "s8>f.;ys&3WwEMSU#Mwz4Y[hx-XnDTHmQTP"
     algorithm: str = "HS256"
-    expire_hours: int = 2
+    expire_hours: int = 999999
     token_prefix: str = "Bearer "
 
 # 数据库配置
@@ -27,7 +28,7 @@ class DatabaseSettings(BaseSetting):
     database: str = "icake"
     dialect: str = "mysql"
     db_api: str = "pymysql"
-    echo: bool = False
+    echo: bool = True
 
     @property
     def db_url(self) -> str:
@@ -35,16 +36,24 @@ class DatabaseSettings(BaseSetting):
 
 # Redis 缓存配置
 class CacheSettings(BaseSetting):
-    host: str = "localhost"
+    host: str = "noahmiller.icu"
     port: int = 6379
     database: int = 0
     password: str | None = None
+
+# 文件上传配置
+class UploadSettings(BaseSetting):
+    BASE_DIR: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    EXPOSED_BASE_DIR: str = os.path.join(BASE_DIR, "upload", "files")
+    UPLOAD_DIR: str = os.path.join(BASE_DIR, "upload", "files")
+    MAX_FILE_SIZE: int = 10 # MB
 
 # 全局配置
 class AppSettings(BaseSetting):
     jwt: JwtSettings = JwtSettings()
     db: DatabaseSettings = DatabaseSettings()
     cache: CacheSettings = CacheSettings()
+    upload: UploadSettings = UploadSettings()
 
 # 全局单例
 app_settings = AppSettings()

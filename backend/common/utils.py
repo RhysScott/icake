@@ -6,6 +6,10 @@ from datetime import datetime, timedelta
 import redis
 import logging
 import os
+import re
+import pathlib
+import redis
+
 
 
 class Logger:
@@ -124,6 +128,30 @@ class ApiResponse:
         """失败响应"""
         return ApiResponse._wrap(data, msg, code)
 
+    @staticmethod
+    def page(
+        list=None,
+        total: int = 0,
+        page_num: int = 1,
+        page_size: int = 10,
+        msg: str = "操作成功",
+        code: int = 200
+    ):
+        """
+        标准分页响应
+        :param list: 数据列表
+        :param total: 总记录数
+        :param page_num: 当前页码
+        :param page_size: 每页条数
+        """
+        data = {
+            "list": list or [],
+            "total": total,           # 总条数
+            "page_num": page_num,       # 当前页
+            "page_size": page_size,     # 每页条数
+            "pages": (total + page_size - 1) // page_size  # 总页数
+        }
+        return ApiResponse._wrap(data, msg, code)
 
 class DateTimeUtils:
     """时间工具类"""
@@ -140,44 +168,76 @@ class DateTimeUtils:
 
 
 class CacheUtils:
-    """Redis 缓存工具类"""
-
-    # 类变量，保存单例 Redis 实例
-    _redis_instance = None
+    """Redis 缓存工具"""
+    _redis: redis.Redis | None = None
 
     @classmethod
-    def init_redis(cls) -> None:
-        """初始化 Redis 连接，全局只执行一次"""
-        if not cls._redis_instance:
-            cls._redis_instance = redis.Redis(
+    def init(cls):
+        """项目启动时初始化一次"""
+        if not cls._redis:
+            cls._redis = redis.Redis(
                 host=app_settings.cache.host,
                 port=app_settings.cache.port,
                 db=app_settings.cache.database,
-                password=app_settings.cache.password
+                password=app_settings.cache.password,
+                decode_responses=True,
+                socket_timeout=0.5,       # 超短超时
+                socket_connect_timeout=0.5 # 连不上快速失败
             )
 
     @classmethod
-    def get_redis(cls) -> redis.Redis:
-        """获取 Redis 单例实例"""
-        if not cls._redis_instance:
-            cls.init_redis()
-        return cls._redis_instance  # type: ignore
+    def client(cls) -> redis.Redis:
+        """全局唯一客户端，不再重复判断"""
+        return cls._redis  # type: ignore
 
     @classmethod
-    def set(cls, key: str, value: str, ex: int = None) -> None:
-        """写入缓存"""
-        cls.get_redis().set(key, value, ex=ex)
+    def set(cls, key: str, value: str | int, ex: int = None):
+        cls.client().set(key, value, ex=ex)
 
     @classmethod
     def get(cls, key: str) -> str | None:
-        """读取缓存"""
-        return cls.get_redis().get(key)  # type: ignore
+        return cls.client().get(key) # type: ignore
 
     @classmethod
-    def delete(cls, key: str) -> None:
-        """删除指定缓存"""
-        cls.get_redis().delete(key)
+    def delete(cls, key: str):
+        cls.client().delete(key)
+      
+
+    @classmethod
+    def mget(cls, keys: list[str]) -> list[str | None]:
+        if not keys:
+            return []
+
+        return cls.client().mget(keys) # type: ignore
 
 
-# 项目启动时初始化 Redis
-CacheUtils.init_redis()
+    @classmethod
+    def delete_by_pattern(cls, pattern: str) -> int:
+        keys = cls.client().keys(pattern)
+        return cls.client().delete(*keys) if keys else 0 # type: ignore
+
+
+# 启动时初始化
+CacheUtils.init()
+
+
+class PathUtils:
+    @staticmethod
+    def is_url(path: str) -> bool:
+        """判断是否为 URL 链接"""
+        if not path:
+            return False
+        return re.match(r'^https?://', path.strip()) is not None
+
+    @staticmethod
+    def is_file_path(path: str) -> bool:
+        """判断是否为本地文件路径"""
+        if not path:
+            return False
+        return not PathUtils.is_url(path)
+
+    @staticmethod
+    def get_path(path: str):
+        if PathUtils.is_url(path):
+            return path
+        return (pathlib.Path(app_settings.upload.EXPOSED_BASE_DIR) / pathlib.Path(path)).as_posix()

@@ -51,7 +51,7 @@ class PreauthMiddleware(BaseHTTPMiddleware):
             RequestContext.set_user_id(user_id)
 
         except Exception as e:
-            Logger.error(f"[鉴权中间件] TOKEN无效: {str(e)}")
+            Logger.error(f"[鉴权中间件] TOKEN无效: {str(e)}, token={request.headers.get('Authorization', '')}")
             return Response(
                 content=json.dumps({"code": 401, "msg": "登录已过期"}),
                 status_code=401,

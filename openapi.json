@@ -1,0 +1,326 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "用户模块接口文档",
+    "version": "1.0.0",
+    "description": "用户注册、登录、重置密码、修改信息、获取个人信息接口"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8000",
+      "description": "本地开发服务"
+    }
+  ],
+  "tags": [
+    {
+      "name": "用户接口",
+      "description": "用户相关所有接口"
+    }
+  ],
+  "paths": {
+    "/user/register": {
+      "post": {
+        "tags": ["用户接口"],
+        "summary": "用户注册",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRegisterRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "统一返回格式",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseUserInfo"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/login": {
+      "post": {
+        "tags": ["用户接口"],
+        "summary": "用户登录",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "统一返回格式",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseLogin"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/reset-password": {
+      "post": {
+        "tags": ["用户接口"],
+        "summary": "重置密码",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserPasswordResetRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "统一返回格式",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseMsg"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/update": {
+      "post": {
+        "tags": ["用户接口"],
+        "summary": "更新用户信息",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "统一返回格式",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseUserInfo"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/info": {
+      "get": {
+        "tags": ["用户接口"],
+        "summary": "获取当前登录用户信息",
+        "responses": {
+          "200": {
+            "description": "统一返回格式",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseUserInfo"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserLoginRequest": {
+        "type": "object",
+        "description": "用户登录请求参数",
+        "required": ["phone", "password"],
+        "properties": {
+          "phone": {
+            "type": "string",
+            "description": "手机号"
+          },
+          "password": {
+            "type": "string",
+            "description": "密码"
+          }
+        }
+      },
+      "UserRegisterRequest": {
+        "type": "object",
+        "description": "用户注册请求参数",
+        "required": ["phone", "password"],
+        "properties": {
+          "phone": {
+            "type": "string",
+            "minLength": 11,
+            "maxLength": 11,
+            "description": "手机号"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 6,
+            "description": "密码"
+          },
+          "nickname": {
+            "type": "string",
+            "nullable": true,
+            "description": "昵称"
+          }
+        }
+      },
+      "UserUpdateRequest": {
+        "type": "object",
+        "description": "用户信息修改请求参数",
+        "required": ["id"],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "nickname": {
+            "type": "string",
+            "nullable": true
+          },
+          "avatar_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "gender": {
+            "type": "integer",
+            "nullable": true
+          },
+          "birthday": {
+            "type": "string",
+            "nullable": true
+          },
+          "bio": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "UserPasswordResetRequest": {
+        "type": "object",
+        "description": "用户重置密码请求",
+        "required": ["phone", "code", "password"],
+        "properties": {
+          "phone": {
+            "type": "string",
+            "description": "手机号"
+          },
+          "code": {
+            "type": "string",
+            "description": "验证码"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 6,
+            "description": "新密码"
+          }
+        }
+      },
+      "UserInfoResponse": {
+        "type": "object",
+        "description": "用户基础信息响应",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "nickname": {
+            "type": "string",
+            "nullable": true
+          },
+          "avatar_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "bio": {
+            "type": "string",
+            "nullable": true
+          },
+          "gender": {
+            "type": "integer",
+            "nullable": true
+          },
+          "birthday": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "create_time": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "update_time": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "is_deleted": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UserLoginResponse": {
+        "type": "object",
+        "description": "用户登录响应（token + 用户信息）",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserInfoResponse"
+          }
+        }
+      },
+      "ApiResponseMsg": {
+        "type": "object",
+        "properties": {
+          "code": {"type": "integer"},
+          "msg": {"type": "string"},
+          "data": {"nullable": true}
+        }
+      },
+      "ApiResponseUserInfo": {
+        "type": "object",
+        "properties": {
+          "code": {"type": "integer"},
+          "msg": {"type": "string"},
+          "data": {"$ref": "#/components/schemas/UserInfoResponse"}
+        }
+      },
+      "ApiResponseLogin": {
+        "type": "object",
+        "properties": {
+          "code": {"type": "integer"},
+          "msg": {"type": "string"},
+          "data": {"$ref": "#/components/schemas/UserLoginResponse"}
+        }
+      }
+    }
+  }
+}

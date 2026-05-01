@@ -1,3 +1,4 @@
+from enum import Enum
 class CacheKey:
     """缓存 Key 构造方法"""
 
@@ -20,3 +21,15 @@ class CacheKey:
     @staticmethod
     def token_blacklist(token: str) -> str:
         return f"token:blacklist:{token}"
+
+    @staticmethod
+    def banner():
+        return f"banner"
+    
+    @staticmethod
+    def notice():
+        return "notice"
+
+class ImageType(Enum):
+    UserAvatar = 0
+    Banner = 1
